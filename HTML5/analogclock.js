@@ -8,7 +8,9 @@ window.onload = appInit;
 function appInit(){
 
 	displayPanel = document.getElementById("displayPanel");
-	tick();	
+	
+	drawClock.start(displayPanel);
+//	tick();
 	
 	initColorPicker();
 	
@@ -54,7 +56,8 @@ function initColorPicker(){
 
 function setColor(event){
 
-	displayPanel.style.color = event.target.value;
+//	displayPanel.style.color = event.target.value;
+	drawClock.frame(event.target.value);
 	saveData("color", event.target.value);
 }
 
@@ -85,14 +88,15 @@ function loadSettings(){
 	var storage = localStorage;
 	if(typeof storage == "undefined") return;
 	
-	var textcolor = storage.getItem("color");
+	var color = storage.getItem("color") || "gray";
 	var image = storage.getItem("image");
 	
-	if(textcolor){
+//	if(textcolor){
 		var colorPicker = document.getElementById("colorPicker");
-		displayPanel.style.color = textcolor;
-		colorPicker.value = textcolor;
-	}
+//		displayPanel.style.color = textcolor;
+		drawClock.frame(color);
+		colorPicker.value = color;
+//	}
 	
 	if(image){
 		document.body.style.backgroundImage = "url('"+image+"')";
