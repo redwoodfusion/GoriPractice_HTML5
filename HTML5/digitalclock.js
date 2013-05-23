@@ -1,30 +1,37 @@
 var displayPanel;
+var controlPanel;
 
-//ここにひつような変数を用意
 
 window.onload = appInit;
 
-function appInit(){
-	displayPanel = document.getElementById("displayPanel");
-	
-	tick();	
-	initColorPicker();
 
+function appInit(){
+
+	displayPanel = document.getElementById("displayPanel");
+	tick();	
+	
+	initColorPicker();
 	
 	var filePicker = document.getElementById("filePicker");
 	var fileButton = document.getElementById("fileButton");
 	filePicker.addEventListener("change", setBackground, false);
-	fileButton.addEventListener("click", function(){
-		filePicker.click();
-		}, false);
+	fileButton.addEventListener("click", function(){filePicker.click();}, false);
+
 	loadSettings();
+	
+	controlPanel = document.getElementById("controlPanel");
+	hideControlPanel();
 }
 
+
 function tick(){
+	
 	var date = new Date();
 	displayPanel.textContent = date.toLocaleTimeString(); 
 	setTimeout(tick, 1000 - date.getMilliseconds());
+	
 }
+
 
 function initColorPicker(){
 	var colorPicker = document.getElementById("colorPicker");
@@ -44,10 +51,13 @@ function initColorPicker(){
 	colorPicker.addEventListener("change", setColor, false);
 }
 
+
 function setColor(event){
+
 	displayPanel.style.color = event.target.value;
 	saveData("color", event.target.value);
 }
+
 
 function saveDate(name, date){
 	var storage = localStorage;
@@ -55,9 +65,12 @@ function saveDate(name, date){
 	storage.setItem(name,data);
 }
 
+
 function setBackground(event){
+
 	var file = event.target.files[0];
 	window.URL = window.URL||window.webkitURL;
+	
 	var url=window.URL.createObjectURL(file);
 	document.body.style.backgroundImage="url('"+url+"')";
 	
@@ -65,6 +78,7 @@ function setBackground(event){
 	fileReader.onload = function(){saveData("image", this.result);};
 	fileReader.readAsDataURL(file);
 }
+
 
 function loadSettings(){
 	
@@ -79,8 +93,28 @@ function loadSettings(){
 		displayPanel.style.color = textcolor;
 		colorPicker.value = textcolor;
 	}
+	
 	if(image){
 		document.body.style.backgroundImage = "url('"+image+"')";
 	}
+
 }
 
+
+function hideControlPanel(){
+	controlPanel.style.visibility="hidden";
+	
+	if(typeof document.ontouchmove == "undefined")
+		document.addEventListener("mousemove", showControlPanel);
+	else document.addEventListener("touchmove", showControlPanel);
+}
+
+
+function showControlPanel(){
+	controlPanel.style.visibility = "visible";
+	setTimeout(hideControlPanel,3000);
+	
+	if(typeof document.ontouchmove =="undefined")
+		document.addEventListener("mousemove", showControlPanel);
+	else document.addEventListener("touchmove", showControlPanel);
+}
