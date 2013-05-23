@@ -9,6 +9,7 @@ function appInit(){
 	
 	tick();	
 	initColorPicker();
+
 	
 	var filePicker = document.getElementById("filePicker");
 	var fileButton = document.getElementById("fileButton");
@@ -16,6 +17,7 @@ function appInit(){
 	fileButton.addEventListener("click", function(){
 		filePicker.click();
 		}, false);
+	loadSettings();
 }
 
 function tick(){
@@ -58,4 +60,27 @@ function setBackground(event){
 	window.URL = window.URL||window.webkitURL;
 	var url=window.URL.createObjectURL(file);
 	document.body.style.backgroundImage="url('"+url+"')";
+	
+	var fileReader = new FileReader();
+	fileReader.onload = function(){saveData("image", this.result);};
+	fileReader.readAsDataURL(file);
 }
+
+function loadSettings(){
+	
+	var storage = localStorage;
+	if(typeof storage == "undefined") return;
+	
+	var textcolor = storage.getItem("color");
+	var image = storage.getItem("image");
+	
+	if(textcolor){
+		var colorPicker = document.getElementById("colorPicker");
+		displayPanel.style.color = textcolor;
+		colorPicker.value = textcolor;
+	}
+	if(image){
+		document.body.style.backgroundImage = "url('"+image+"')";
+	}
+}
+
