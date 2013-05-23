@@ -59,7 +59,7 @@ function setColor(event){
 }
 
 
-function saveDate(name, date){
+function saveData(name, data){
 	var storage = localStorage;
 	if(typeof storage == "undefined") return;
 	storage.setItem(name,data);
@@ -112,7 +112,7 @@ function hideControlPanel(){
 
 function showControlPanel(){
 	controlPanel.style.visibility = "visible";
-	setTimeout(hideControlPanel,3000);
+	setTimeout(hideControlPanel,5000);
 	
 	if(typeof document.ontouchmove =="undefined")
 		document.addEventListener("mousemove", showControlPanel);
