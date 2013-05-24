@@ -107,6 +107,7 @@ function loadSettings(){
 
 	var posX = storage.getItem("PosX");
 	var posY = storage.getItem("PosY");
+	
 	if(posX && posY){
 		displayPanel.style.left = posX;
 		displayPanel.style.top = posY;
@@ -139,7 +140,7 @@ function dragStart(event){
 	event.dataTransfer.setData("Text",this.innerHTML);
 }
 
-function moveClock(element, x,y){
+function moveClock(element, x, y){
 	var posX, posY;
 	var newX = element.offsetLeft + x - lastX;
 	var newY = element.offsetTop + y - lastY;
