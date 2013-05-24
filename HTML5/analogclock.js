@@ -1,6 +1,6 @@
 var displayPanel;
 var controlPanel;
-
+var lastX, lastY;
 
 window.onload = appInit;
 
@@ -23,6 +23,9 @@ function appInit(){
 	
 	controlPanel = document.getElementById("controlPanel");
 	hideControlPanel();
+	
+	displayPanel.addEventListener("dragstart", dragStart, false);
+	displayPanel.addEventListener("dragend", dragEnd, false);
 }
 
 
@@ -102,6 +105,13 @@ function loadSettings(){
 		document.body.style.backgroundImage = "url('"+image+"')";
 	}
 
+	var posX = storage.getItem("PosX");
+	var posY = storage.getItem("PosY");
+	if(posX && posY){
+		displayPanel.style.left = posX;
+		displayPanel.style.top = posY;
+	}
+	
 }
 
 
@@ -121,4 +131,44 @@ function showControlPanel(){
 	if(typeof document.ontouchmove =="undefined")
 		document.addEventListener("mousemove", showControlPanel);
 	else document.addEventListener("touchmove", showControlPanel);
+}
+
+function dragStart(event){
+	lastX = event.screenX;
+	lastY = event.screenX;
+	event.dataTransfer.setData("Text",this.innerHTML);
+}
+
+function moveClock(element, x,y){
+	var posX, posY;
+	var newX = element.offsetLeft + x - lastX;
+	var newY = element.offsetTop + y - lastY;
+	var maxX = document.body.clientWidth - element.offsetWidth;
+	var maxY = document.body.clientHeight - element.offsetHeight;
+	
+	if(newX < 0) newX = 0;
+	if(newY < 0) newY = 0;
+	if(newX > maxX) newX = maxX;
+	if(newY > maxY) newY = maxY;
+	
+	posX = newX + "px";
+	posY = newY + "px";
+	
+	element.style.left = posX;
+	element.style.top = posY;
+	
+	return{ x: posX, y: posY};
+}
+
+function dragEnd(event){
+	var element = event.target;
+	var x = event.screenX;
+	var y = event.screenY;
+	var pos = moveClock(element, x, y);
+	
+	saveData("PosX",pos.x);
+	saveData("PosY",pos.y);
+	
+	lastX = null;
+	lastY = null;
 }
