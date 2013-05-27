@@ -16,16 +16,24 @@ function appInit(){
 	
 	var filePicker = document.getElementById("filePicker");
 	var fileButton = document.getElementById("fileButton");
+
 	filePicker.addEventListener("change", setBackground, false);
 	fileButton.addEventListener("click", function(){filePicker.click();}, false);
-
+	
 	loadSettings();
 	
 	controlPanel = document.getElementById("controlPanel");
-	hideControlPanel();
-	
-	displayPanel.addEventListener("dragstart", dragStart, false);
-	displayPanel.addEventListener("dragend", dragEnd, false);
+//	hideControlPanel();
+
+	if(typeof displayPanel.ontouchstart == "undefined"){
+		displayPanel.addEventListener("dragstart", dragStart, false);
+		displayPanel.addEventListener("dragend", dragEnd, false);
+	}else{
+		displayPanel.addEventListener("touchstart", touchStart, false);
+		displayPanel.addEventListener("touchmove", touchMove, false);
+		displayPanel.addEventListener("touchend", touchEnd, false);	
+	}
+
 }
 
 
@@ -173,3 +181,43 @@ function dragEnd(event){
 	lastX = null;
 	lastY = null;
 }
+
+function touchStart(event){
+	lastX = event.touches[0].clientX;
+	lastY = event.touches[0].clientY;
+}
+
+function touchMove(event){
+	
+	event.preventDefault();
+	var element = event.target;
+	if(element.nodeName == "CANVAS"){
+		element = element.parentNode;
+	}
+	
+	var x = event.touches[0].clientX;
+	var y = event.touches[0].clientY;
+	
+	moveClock(element, x, y);
+	
+}
+
+function touchEnd(event){
+	
+	var element = event.target;
+	if(element.nodeName == "CANVAS"){
+		element = element.parentNode;
+	}
+	
+	var x = event.touches[0].clientX;
+	var y = event.touches[0].clientY;
+	
+	var pos = moveClock(element, x, y);
+	
+	saveData("PosX",pos.x);
+	saveData("PosY",pos.y);
+	
+	lastX = null;
+	lastY = null;
+}
+
